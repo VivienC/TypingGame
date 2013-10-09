@@ -12,38 +12,34 @@ namespace WindowsFormsApplication1
 {
     public partial class Form1 : Form
     {
-        List<Level> level = new List<Level>();
-        Random randomNum = new Random();
+        // Form data        
         List<Label> gameLabels = new List<Label>();
         string userInput = "";
-        int userScore = 0;
-        int currentLevel = 0;
-        
+        GameMechanics gameMechanics = new GameMechanics();
+        Random randomNum = new Random();
+
         public Form1()
         {
             InitializeComponent();
-            initializeGameData();
 
-            // Initialize text boxes
-            levelText.Text = "Level: " + (currentLevel+1);
-            scoreText.Text = "Score: " + userScore;
-            needText.Text = "Need: " + level[currentLevel].scoreForLevelUp;
+            updateGameDataLabels();
             addNewGameLabel();
-            
             timer1.Start();
         }
 
         // Move the labels and create a new label on every tick of the timer
         private void timer1_Tick(object sender, EventArgs e)
         {
+            // Move the labels
             foreach (Label label in gameLabels)
             {
                 label.Location = new Point(label.Location.X, label.Location.Y + 40);
             }
 
+            // TODO: use game mechanics class to supply text
             addNewGameLabel();
 
-            // If a label goes off the playing area remove it from the list.
+            // If the first label goes off the playing area remove it from the list.
             if (gameLabels[0].Location.Y >= 500)
             {
                 gameLabels[0].Visible = false;
@@ -57,7 +53,7 @@ namespace WindowsFormsApplication1
         {
             // Create a label and add it to the list
             Label label = new Label();
-            label.Text = level[currentLevel].levelWords[randomNum.Next(level[currentLevel].numOfWords)];
+            label.Text = gameMechanics.getWord();
             label.Location = new Point(randomNum.Next(350), 5);
             label.AutoSize = true;
             label.BorderStyle = BorderStyle.FixedSingle;
@@ -77,105 +73,51 @@ namespace WindowsFormsApplication1
                 return;
             }
 
-            int labelIndex = 0;
-            bool userInputCorrect = false;
 
-            // The user had typed a space, so check if their word
-            // matches the list of game words
-            foreach (Label label in gameLabels)
+            // The user has typed a space so check the answer
+            if (gameMechanics.isAnswerRight(userInput))
             {
-                if (label.Text == userInput)
+                int labelIndex = 0;
+
+                // The user has typed a correct word, so find its index
+                foreach (Label label in gameLabels)
                 {
-                    // Their word matches, so take note of the index
-                    // and hide the label
-                    label.Visible = false;
-                    labelIndex = gameLabels.IndexOf(label);
-                    userInputCorrect = true;                    
+                    if (label.Text == userInput)
+                    {
+                        labelIndex = gameLabels.IndexOf(label);
 
-                    // Game Words can be repeated in the list.
-                    // Break here so that the first correct one found
-                    // is removed.
-                    break;
+                        // Game Words can be repeated in the list.
+                        // Break here so that the first correct one found
+                        // is removed.
+                        break;
+                    }
                 }
-            }
 
-            // Remove the label
-            if (userInputCorrect)
-            {
-                // increment their score
-                userScore++;
-                scoreText.Text = "Score: " + userScore;
-                
+                // Hide the label and remove it from the list
+                gameLabels[labelIndex].Visible = false;
                 gameLabels.RemoveAt(labelIndex);
-                
-            }
-            else
-            {
-                // reset their score
-                userScore = 0;
-                scoreText.Text = "Score: " + userScore;
             }
 
-            // Check for level up
-            if (userScore >= level[currentLevel].scoreForLevelUp)
-            {
-                currentLevel++;
-                levelText.Text = "Level: " + (currentLevel+1);
-                needText.Text = "Need: " + level[currentLevel].scoreForLevelUp;
-                
-                userScore = 0;
-                scoreText.Text = "Score: " + userScore;
-            }
+            updateGameDataLabels();
 
             // Clear the user input, for the next try
             userInput = "";
         }
 
-        // Setup the words for each of the levels
-        private void initializeGameData()
+        private void updateGameDataLabels()
         {
+            // Update Score
+            scoreText.Text = "Score: " + gameMechanics.userScore;
 
-
-            String[] level1Words = {"a", "s", "d", "f", "g",
-                                    "h", "j", "k", "l", ";"};
-            level.Add(new Level(level1Words, 5));
-
-            String[] level2Words = {"has", "alas", "gad;",
-                                    "lad", "jak;", ";;;;",
-                                    "had","fad", "kl;",
-                                    "sad", "glad"};
-            level.Add(new Level(level2Words, 15));
-
-            String[] level3Words = {"q", "w", "e", "r", "t",
-                                    "y", "u", "i", "o", "p"};
-            level.Add(new Level(level3Words, 10));
-
-            String[] level4Words = {"qwert", "yuiop",
-                                    "wet", "yet", "put",
-                                    "quit", "weep;", "wipe",
-                                    "tip","out"};
-            level.Add(new Level(level4Words, 15));
-
-            String[] level5Words = {"z", "x", "c", "v", "b",
-                                    "n", "m", ",", ".", "/"};
-            level.Add(new Level(level5Words, 10));
-
-            String[] level6Words = {"zxcvb", "nm,./",
-                                    "nxc", "vmn", "z,.",
-                                    "bv.n", "mx,", "/cv",
-                                    "bxm","xxz"};
-            level.Add(new Level(level6Words, 15));
-
-            String[] level7Words = {"1", "2", "3", "4", "5",
-                                    "6", "7", "8", "9", "0"};
-            level.Add(new Level(level7Words, 10));
-
-            String[] level8Words = {"12345", "67890",
-                                    "876", "123", "934",
-                                    "037", "892", "246",
-                                    "029","715"};
-            level.Add(new Level(level8Words, 15));
+            // Update Level and Required Score if required
+            if (gameMechanics.updateLevelAndRequiredScore)
+            {
+                levelText.Text = "Level: " + (gameMechanics.currentLevel + 1);
+                needText.Text = "Need: " + gameMechanics.requiredScore;
+            }
         }
+
+        
 
     }
 }

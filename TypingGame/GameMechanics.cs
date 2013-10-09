@@ -39,12 +39,31 @@ namespace WindowsFormsApplication1
             // Set these flags to false to control score and level updates
             updateLevelAndRequiredScore = false;
 
-            // The user had typed a space, so check if their word
-            // matches the list of game words and pass result to update game data
-            return updateGameData(level[currentLevel].levelWords.Contains(userAnswer));;
+            // Check if the user has typed a word that matches the current level's word list
+            if (level[currentLevel].levelWords.Contains(userAnswer))
+            {
+                updateGameData(true);
+                return true;
+            }
+            else
+            {
+                for (int i = 0; i < currentLevel; i++)
+                {
+                    // If the word is from previous levels then return true but do
+                    // update the score.
+                    if (level[i].levelWords.Contains(userAnswer))
+                    {                        
+                        return true;
+                    }
+                }
+            }
+
+            // The user got an answer wrong to update the score accordingly
+            updateGameData(false);
+            return false;
         }
 
-        private bool updateGameData(bool answerIsCorrect)
+        private void updateGameData(bool answerIsCorrect)
         {
             if (answerIsCorrect)
             {
@@ -54,6 +73,8 @@ namespace WindowsFormsApplication1
                 // Check for level up
                 if (userScore >= level[currentLevel].scoreForLevelUp)
                 {
+                    // Reset the score to zero to start counting again
+                    userScore = 0;
                     currentLevel++;
                     requiredScore = level[currentLevel].scoreForLevelUp;
                     updateLevelAndRequiredScore = true;
@@ -64,8 +85,6 @@ namespace WindowsFormsApplication1
             {
                 userScore = 0;
             }
-
-            return answerIsCorrect;
 
         }
 

@@ -15,7 +15,8 @@ namespace WindowsFormsApplication1
         
         public int currentLevel { get; private set; }
         public int requiredScore { get; private set; }
-        public bool updateLevelAndRequiredScore { get; private set; }        
+        public bool updateLevelAndRequiredScore { get; private set; }
+        public int levelSpeed { get; private set; }
 
         public GameMechanics()
         {
@@ -24,6 +25,7 @@ namespace WindowsFormsApplication1
             currentLevel = 0;
             requiredScore = level[currentLevel].scoreForLevelUp;
             updateLevelAndRequiredScore = true;
+            levelSpeed = level[currentLevel].levelSpeed;
             
         }
 
@@ -78,6 +80,7 @@ namespace WindowsFormsApplication1
                     currentLevel++;
                     requiredScore = level[currentLevel].scoreForLevelUp;
                     updateLevelAndRequiredScore = true;
+                    levelSpeed = level[currentLevel].levelSpeed;
 
                 }
             }
@@ -95,43 +98,43 @@ namespace WindowsFormsApplication1
 
             String[] level1Words = {"a", "s", "d", "f", "g",
                                     "h", "j", "k", "l", ";"};
-            level.Add(new Level(level1Words, 5));
+            level.Add(new Level(level1Words, 5, 1000));
 
             String[] level2Words = {"has", "alas", "gad;",
                                     "lad", "jak;", ";;;;",
                                     "had","fad", "kl;",
                                     "sad", "glad"};
-            level.Add(new Level(level2Words, 15));
+            level.Add(new Level(level2Words, 15, 2000));
 
             String[] level3Words = {"q", "w", "e", "r", "t",
                                     "y", "u", "i", "o", "p"};
-            level.Add(new Level(level3Words, 10));
+            level.Add(new Level(level3Words, 10, 1000));
 
             String[] level4Words = {"qwert", "yuiop",
                                     "wet", "yet", "put",
-                                    "quit", "weep;", "wipe",
+                                    "quit", "weep", "wipe",
                                     "tip","out"};
-            level.Add(new Level(level4Words, 15));
+            level.Add(new Level(level4Words, 15, 1000));
 
             String[] level5Words = {"z", "x", "c", "v", "b",
                                     "n", "m", ",", ".", "/"};
-            level.Add(new Level(level5Words, 10));
+            level.Add(new Level(level5Words, 10, 1000));
 
             String[] level6Words = {"zxcvb", "nm,./",
                                     "nxc", "vmn", "z,.",
                                     "bv.n", "mx,", "/cv",
                                     "bxm","xxz"};
-            level.Add(new Level(level6Words, 15));
+            level.Add(new Level(level6Words, 15, 1000));
 
             String[] level7Words = {"1", "2", "3", "4", "5",
                                     "6", "7", "8", "9", "0"};
-            level.Add(new Level(level7Words, 10));
+            level.Add(new Level(level7Words, 10, 1000));
 
             String[] level8Words = {"12345", "67890",
                                     "876", "123", "934",
                                     "037", "892", "246",
                                     "029","715"};
-            level.Add(new Level(level8Words, 15));
+            level.Add(new Level(level8Words, 15, 1000));
         }
     }
 }

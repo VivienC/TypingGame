@@ -115,6 +115,8 @@ namespace WindowsFormsApplication1
                 levelText.Text = "Level: " + (gameMechanics.currentLevel + 1);
                 needText.Text = "Need: " + gameMechanics.requiredScore;
             }
+
+            timer1.Interval = gameMechanics.levelSpeed;
         }
 
         

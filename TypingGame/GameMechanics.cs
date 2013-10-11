@@ -10,6 +10,7 @@ namespace WindowsFormsApplication1
     {
         // Game mechanics
         List<Level> level = new List<Level>();
+        List<string> currentGameWords = new List<string>(); 
         Random randomNum = new Random();
 
         public int userScore { get; private set; }
@@ -33,7 +34,8 @@ namespace WindowsFormsApplication1
         public string getWord()
         {
             // Random pick a word fromthe current level's list
-            return level[currentLevel].levelWords[randomNum.Next(level[currentLevel].numOfWords)];
+            currentGameWords.Add(level[currentLevel].levelWords[randomNum.Next(level[currentLevel].numOfWords)]);
+            return currentGameWords.ElementAt(currentGameWords.Count-1);
 
         }
 
@@ -43,8 +45,9 @@ namespace WindowsFormsApplication1
             updateLevelAndRequiredScore = false;
 
             // Check if the user has typed a word that matches the current level's word list
-            if (level[currentLevel].levelWords.Contains(userAnswer))
+            if (currentGameWords.Contains(userAnswer))
             {
+                currentGameWords.RemoveAt(currentGameWords.IndexOf(userAnswer));
                 updateGameData(true);
                 return true;
             }

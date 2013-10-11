@@ -93,9 +93,13 @@ namespace WindowsFormsApplication1
                     }
                 }
 
-                // Hide the label and remove it from the list
-                gameLabels[labelIndex].Visible = false;
-                gameLabels.RemoveAt(labelIndex);
+                //Make sure the game labels list is not empty
+                if (gameLabels.Count != 0)
+                {
+                    // Hide the label and remove it from the list
+                    gameLabels[labelIndex].Visible = false;
+                    gameLabels.RemoveAt(labelIndex);
+                }
             }
 
             updateGameDataLabels();
